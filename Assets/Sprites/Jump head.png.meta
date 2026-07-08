@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 52bc3c64f8bb3d74ab171f0e617e1223
+guid: 261ae80b928801a419878a73d90b7dfa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2318055077200906540
-    second: invisible head_0
+      213: 581844496653896417
+    second: Jump head_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: invisible head_0
+      name: Jump head_0
       rect:
         serializedVersion: 2
-        x: 405
-        y: 429
-        width: 270
-        height: 361
+        x: 349
+        y: 340
+        width: 262
+        height: 359
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4d636a9503d94dfd0800000000000000
-      internalID: -2318055077200906540
+      spriteID: 1ea4299ac70231800800000000000000
+      internalID: 581844496653896417
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: ceb612a935c2b1742b4397d710052e2c
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      invisible head_0: -2318055077200906540
+      Jump head_0: 581844496653896417
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

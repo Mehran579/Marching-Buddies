@@ -1,11 +1,14 @@
-using JetBrains.Annotations;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerManager : MonoBehaviour
 {
     public Rigidbody2D playerrb;
+    public Volume globalvolume;
+    private Bloom bloom;
     [Header("Stats")]
     public float MoveSpeed;
     public float Jump;
@@ -85,7 +88,11 @@ public class PlayerManager : MonoBehaviour
         }
     }
     #endregion
-    
+    private void Start()
+    {
+        globalvolume.profile.TryGet(out bloom);
+    }
+
     private void Update()
     {
         if(transform.GetChild(0).localPosition.x == 2)
@@ -94,6 +101,7 @@ public class PlayerManager : MonoBehaviour
             candash = true;
             Jump = 15;
             MoveSpeed = 23;
+            bloom.intensity.value = 0;
         }
         else if (transform.GetChild(1).localPosition.x== 2)
         {
@@ -121,6 +129,7 @@ public class PlayerManager : MonoBehaviour
             canpush = false;
             candash = false;
             ischarged = true;
+            bloom.intensity.value = 4;
         }
     }
     private void FixedUpdate()
