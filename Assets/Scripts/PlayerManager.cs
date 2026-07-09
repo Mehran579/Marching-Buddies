@@ -14,10 +14,12 @@ public class PlayerManager : MonoBehaviour
     public float Jump;
     [Header("Abilities Active")]
     public bool candash;
-    public bool candoublejump;
-    public bool ishidden;
     public bool canpush;
+    //public bool candoublejump;
+    public bool ishidden;
     public bool ischarged;
+    public float speedboost;
+    public float jumpboost;
     [Header("Dash")]
     public float dashSpeed;
     public float dashduration;
@@ -95,41 +97,60 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        if(transform.GetChild(0).localPosition.x == 2)
+        if(transform.GetChild(0).localPosition.x == 2) //speed head
         {
-            ischarged = false;
             candash = true;
-            Jump = 15;
-            MoveSpeed = 23;
-            bloom.intensity.value = 0;
-        }
-        else if (transform.GetChild(1).localPosition.x== 2)
-        {
-            candash = false;
-            candoublejump = true;
-            Jump = 20;
-            MoveSpeed = 20;
-        }
-        else if(transform.GetChild(2).localPosition.x==2)
-        {
-            candoublejump = false;
-            Jump = 15;
-            ishidden = true;
-            Hide();
-        }
-        else if(transform.GetChild(3).localPosition.x == 2)
-        {
+            canpush = false;
             ishidden = false;
-            canpush = true;
-            candash = true;
+            ischarged = false;
+            Jump = 15;
+            MoveSpeed = speedboost;
+            bloom.intensity.value = 0;
             UnHide();
         }
-        else if(transform.GetChild(4).localPosition.x == 2)
+        else if (transform.GetChild(1).localPosition.x == 2)  //jump head
         {
-            canpush = false;
             candash = false;
+            canpush = false;
+            ishidden = false;
+            ischarged = false;
+            Jump = jumpboost;
+            MoveSpeed = 20;
+            bloom.intensity.value = 0;
+            UnHide();
+        }
+        else if(transform.GetChild(2).localPosition.x==2) //invisi head
+        {
+            candash = false;
+            canpush = false;
+            ishidden = false;
+            ischarged = false;
+            Jump = 15;
+            MoveSpeed = 20;
+            bloom.intensity.value = 0;
+            Hide();
+        }
+        else if(transform.GetChild(3).localPosition.x == 2)     //strenght head
+        {
+            candash = true;
+            canpush = true;
+            ishidden = false;
+            ischarged = false;
+            Jump = 15;
+            MoveSpeed = 20;
+            bloom.intensity.value = 0;
+            UnHide();
+        }
+        else if(transform.GetChild(4).localPosition.x == 2) //charge head
+        {
+            candash = false;
+            canpush = false;
+            ishidden = false;
             ischarged = true;
-            bloom.intensity.value = 4;
+            Jump = 15;
+            MoveSpeed = 20;
+            bloom.intensity.value = 5;
+            UnHide();
         }
     }
     private void FixedUpdate()
