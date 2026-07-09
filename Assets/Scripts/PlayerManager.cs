@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 public class PlayerManager : MonoBehaviour
 {
+    public GameObject[] glowingsprites;
     public GameObject _camera;
     public GameObject c_camera;
     public Rigidbody2D playerrb;
@@ -93,6 +94,7 @@ public class PlayerManager : MonoBehaviour
     #endregion
     private void Start()
     {
+        Debug.Log("give access to medsssssss1111");
         globalvolume.profile.TryGet(out bloom);
         DontDestroyOnLoad(this);
         DontDestroyOnLoad(_camera);
@@ -110,7 +112,7 @@ public class PlayerManager : MonoBehaviour
             ischarged = false;
             Jump = 15;
             MoveSpeed = speedboost;
-            bloom.intensity.value = 0;
+            //bloom.intensity.value = 0;
             UnHide();
         }
         else if (transform.GetChild(1).localPosition.x == 2)  //jump head
@@ -121,18 +123,18 @@ public class PlayerManager : MonoBehaviour
             ischarged = false;
             Jump = jumpboost;
             MoveSpeed = 20;
-            bloom.intensity.value = 0;
+            //bloom.intensity.value = 0;
             UnHide();
         }
         else if(transform.GetChild(2).localPosition.x==2) //invisi head
         {
             candash = false;
             canpush = false;
-            ishidden = false;
+            ishidden = true;
             ischarged = false;
             Jump = 15;
             MoveSpeed = 20;
-            bloom.intensity.value = 0;
+            //bloom.intensity.value = 0;
             Hide();
         }
         else if(transform.GetChild(3).localPosition.x == 2)     //strenght head
@@ -143,7 +145,7 @@ public class PlayerManager : MonoBehaviour
             ischarged = false;
             Jump = 15;
             MoveSpeed = 20;
-            bloom.intensity.value = 0;
+            //bloom.intensity.value = 0;
             UnHide();
         }
         else if(transform.GetChild(4).localPosition.x == 2) //charge head
@@ -154,8 +156,22 @@ public class PlayerManager : MonoBehaviour
             ischarged = true;
             Jump = 15;
             MoveSpeed = 20;
-            bloom.intensity.value = 5;
+            //bloom.intensity.value = 3;
             UnHide();
+        }
+        if(ischarged)
+        {
+            foreach (GameObject p in glowingsprites)
+            {
+                p.SetActive(true);
+            }
+        }
+        else
+        {
+            foreach (GameObject p in glowingsprites)
+            {
+                p.SetActive(false);
+            }
         }
     }
     private void FixedUpdate()
@@ -173,6 +189,14 @@ public class PlayerManager : MonoBehaviour
         else if (!isGrounded())
         {
             coyotetimer -= Time.deltaTime;
+            if(playerrb.linearVelocity.y < 0)
+            {
+                playerrb.gravityScale = 9f;
+            }
+            else
+            {
+                playerrb.gravityScale = 4f;
+            }
         }
         jumpinput_timer -= Time.deltaTime;
     }
