@@ -3,9 +3,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-
 public class PlayerManager : MonoBehaviour
 {
+    public GameObject _camera;
+    public GameObject c_camera;
     public Rigidbody2D playerrb;
     public Volume globalvolume;
     private Bloom bloom;
@@ -93,6 +94,10 @@ public class PlayerManager : MonoBehaviour
     private void Start()
     {
         globalvolume.profile.TryGet(out bloom);
+        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(_camera);
+        DontDestroyOnLoad(c_camera);
+        DontDestroyOnLoad(globalvolume);
     }
 
     private void Update()
