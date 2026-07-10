@@ -306,6 +306,13 @@ public class PlayerManager : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("missile"))
+        {
+            transform.position = Vector2.zero;
+        }
+    }
     #endregion
 }
 
