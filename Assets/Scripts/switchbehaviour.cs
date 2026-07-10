@@ -3,11 +3,6 @@ using UnityEngine.InputSystem;
 
 public class switchbehaviour : MonoBehaviour
 {
-    private void OnMouseDown()
-    {
-        Debug.Log("clicked");
-        
-    }
     private void Update()
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
@@ -19,12 +14,10 @@ public class switchbehaviour : MonoBehaviour
             {
                 if (transform.localPosition.x == 2)
                 {
-                    Debug.Log("shouldn't switch");
                     return;
                 }
                 else
                 {
-                    Debug.Log("should switch" + name);
                     foreach (Transform child in transform.parent)
                     {
                         if (child.localPosition.x == 2)
