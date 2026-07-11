@@ -18,7 +18,8 @@ public class bossmanager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
+    {
+        transform.GetChild(0).GetComponent<Rigidbody2D>().linearVelocity = new Vector2(1*Time.fixedDeltaTime, 0);
         if (busy) return;
         decide();
     }
