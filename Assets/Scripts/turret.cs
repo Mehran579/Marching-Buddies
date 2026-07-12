@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class turret : MonoBehaviour
 {
+    GameObject leftthand;
     public GameObject missile;
     private void OnTriggerEnter2D(Collider2D other)
     {
