@@ -1,15 +1,15 @@
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 
 public class bossmanagerv2 : MonoBehaviour
 {
     public bool isswiperight;
     bool busy;
+    bool isshooting;
     bool slowdown;
     bool followplayer;
+    bool isfalling;
+    public GameObject projectile;
     public GameObject player;
     public Animator animator;
     public Rigidbody2D righthand;
@@ -22,7 +22,7 @@ public class bossmanagerv2 : MonoBehaviour
     void decide()
     {
         busy = true;
-        int choice = Random.Range(0, 4);
+        int choice = Random.Range(0, 3);
         switch (choice)
         {
             case 0:
@@ -35,12 +35,13 @@ public class bossmanagerv2 : MonoBehaviour
                 break;
             case 2:
                 animator.SetTrigger("air strike"); break;
-            case 3:
-                animator.SetTrigger("projectile"); break;
+            //case 3:
+            //    animator.SetTrigger("projectile"); break;
         }
     }
     public IEnumerator endstage()
     {
+        animator.SetTrigger("exit");
         yield return new WaitForSecondsRealtime(Random.Range(1f,2.5f));
         busy = false;
     }
@@ -50,17 +51,21 @@ public class bossmanagerv2 : MonoBehaviour
         {
             if(animator.GetCurrentAnimatorStateInfo(0).IsName("swipe right") && Vector2.Distance(player.transform.position, righthand.position) < 20)
             {
-                Debug.Log("called");
                 StartCoroutine(slowdownroutine());
             }
             else if(animator.GetCurrentAnimatorStateInfo(0).IsName("swipe left") && Vector2.Distance(player.transform.position, lefthand.position) < 20)
             {
                 StartCoroutine(slowdownroutine());
             }
+            else if(animator.GetCurrentAnimatorStateInfo(0).IsName("aerial attack") && Vector2.Distance(player.transform.position, righthand.position) < 15 && isfalling&& righthand.linearVelocity.y < 0)
+            {
+                Debug.Log(Vector2.Distance(player.transform.position, righthand .position));
+                StartCoroutine (slowdownroutine());
+            }
         }
-        if (followplayer)
+        if (followplayer )
         {
-            righthand.MovePosition(Vector2.MoveTowards(righthand.position, player.transform.right,Time.fixedDeltaTime));
+            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(player.transform.position.x+5,righthand.position.y),5*Time.fixedDeltaTime));
         }
     }
     #region Right swipe
@@ -76,7 +81,7 @@ public class bossmanagerv2 : MonoBehaviour
         righthand.gravityScale = 0f;
         righthand.linearVelocity = new Vector2(0, -50f);
         yield return new WaitForSeconds(1f);
-        righthand.linearVelocity = new Vector2(-transform.right.x * 1000f, 0);
+        righthand.linearVelocity = new Vector2(-transform.right.x * 500f, 0);
         yield return new WaitForSeconds(1f);
         righthand.gameObject.GetComponent<TrailRenderer>().enabled = false;
         float speed = Vector2.Distance(righthand.position, new Vector2(18.52628f, -4.68667f))/0.3f;
@@ -87,7 +92,19 @@ public class bossmanagerv2 : MonoBehaviour
         }
         righthand.linearVelocity = Vector2.zero;
         lefthand.gameObject.GetComponent<Collider2D>().enabled = true;
-        animator.SetTrigger("exit");
+        int choice = Random.Range(0, 3);
+        switch (choice)
+        {
+            case 0:
+                animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
+                break;
+            case 1:
+                animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
+                break;
+            case 2:
+                animator.SetTrigger("projectile");
+                break;
+        }
     }
     #endregion
     #region Left swipe
@@ -103,7 +120,7 @@ public class bossmanagerv2 : MonoBehaviour
         lefthand.gravityScale = 0f;
         lefthand.linearVelocity = new Vector2(0, -50f);
         yield return new WaitForSeconds(1f);
-        lefthand.linearVelocity = new Vector2(transform.right.x * 1000f, 0);
+        lefthand.linearVelocity = new Vector2(transform.right.x * 500f, 0);
         yield return new WaitForSeconds(1f);
         lefthand.gameObject.GetComponent<TrailRenderer>().enabled = false;
         float speed = Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)) / 0.3f;
@@ -114,41 +131,109 @@ public class bossmanagerv2 : MonoBehaviour
         }
         lefthand.linearVelocity = Vector2.zero;
         righthand.gameObject.GetComponent<Collider2D>().enabled = true;
-        animator.SetTrigger("exit");
+        int choice = Random.Range(0, 3);
+        switch (choice)
+        {
+            case 0:
+                animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
+                break;
+            case 1:
+                animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
+                break;
+            case 2:
+                animator.SetTrigger("projectile");
+                break;
+        }
     }
     #endregion
     #region Aerial Attack
     public IEnumerator aerialattack()
     {
-        Debug.Log("called");
         while (Vector2.Distance(righthand.position, lefthand.position) >= 10.015f)
         {
             righthand.MovePosition(Vector2.MoveTowards(righthand.position, lefthand.position, Vector2.Distance(righthand.position, lefthand.position)/0.5f * Time.fixedDeltaTime));
             lefthand.MovePosition(Vector2.MoveTowards(lefthand.position, righthand.position, Vector2.Distance(righthand.position, lefthand.position)/0.5f * Time.fixedDeltaTime));
             yield return new WaitForFixedUpdate();
         }
+        Debug.Log("isstuckhere");
         lefthand.transform.SetParent(righthand.transform);
         lefthand.simulated = false;
-        while (Vector2.Distance(righthand.position,new Vector2(righthand.position.x, righthand.position.x + 4f)) > 0)
+        while (Vector2.Distance(righthand.position,new Vector2(righthand.position.x, 9.31333f)) > 0.01)
         {
-            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(righthand.position.x, righthand.position.x + 4f),20*Time.fixedDeltaTime));
+            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(righthand.position.x, 9.31333f),20*Time.fixedDeltaTime));
             yield return new WaitForFixedUpdate();
         }
-        //Debug.Log("exited");
+        Debug.Log("exited");
         for (int i = 0; i < 3; i++)
         {
             followplayer = true;
-            yield return new WaitForSeconds(Random.Range(1, 3));
+            yield return new WaitForSeconds(Random.Range(0.5f, 3f));
             followplayer = false;
-            righthand.linearVelocity = new Vector2(0, 1000f);
+            isfalling = true;
+            Debug.Log("falling");
+            righthand.linearVelocity = new Vector2(0, -250);
+            Debug.Log($"i = {i}, vel = {righthand.linearVelocity}");
+            lefthand.GetComponent<TrailRenderer>().enabled = true;
+            righthand.GetComponent<TrailRenderer>().enabled = true;
+            yield return new WaitForSeconds(0.3f);
+            righthand.linearVelocity = Vector2.zero;
+            float speed = Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)) / 0.3f;
+            while (Vector2.Distance(righthand.position, new Vector2(righthand.position.x, 9.31333f)) > 0.01)
+            {
+                righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(righthand.position.x, 9.31333f), 20 * Time.fixedDeltaTime));
+                yield return new WaitForFixedUpdate();
+            }
         }
-        int j = 0;
-        
+        Debug.Log("Exited for loop");
+        lefthand.simulated = true;
+        lefthand.transform.SetParent(transform);
+        float speedleft = Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)) / 0.3f;
+        while (Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)) > 0.01f)
+        {
+            Debug.Log(Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)));
+            lefthand.MovePosition(Vector2.MoveTowards(lefthand.position, new Vector2(-18.52628f, -4.68667f), speedleft * Time.fixedDeltaTime));
+            yield return new WaitForFixedUpdate();
+        }
+        float speedright = Vector2.Distance(righthand.position, new Vector2(18.52628f, -4.68667f)) / 0.3f;
+        while (Vector2.Distance(righthand.position, new Vector2(18.52628f, -4.68667f)) > 0.01f)
+        {
+            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(18.52628f, -4.68667f), speedright * Time.fixedDeltaTime));
+            yield return new WaitForFixedUpdate();
+        }
+        int choice = Random.Range(0, 3);
+        switch (choice)
+        {
+            case 0:
+                animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
+                break;
+            case 1:
+                animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
+                break;
+            case 2:
+                animator.SetTrigger("projectile");
+                break;
+        }
+    }
+    #endregion
+    #region Projectile
+    public IEnumerator shootprojectile()
+    {
+        isshooting = true;
+        Debug.Log(transform.GetChild(0).transform.position);
+        Debug.Log(transform.GetChild(0));
+        Rigidbody2D p = Instantiate(projectile,transform.GetChild(0).transform.position,Quaternion.identity).GetComponent<Rigidbody2D>();
+        p.linearVelocity = (player.transform.position - transform.GetChild(0).transform.position).normalized * 3f;
+        yield return new WaitForSeconds(2);
+        Destroy(p.gameObject);
+        animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
+        yield return new WaitForSeconds(Random.Range(3f, 8f));
+        isshooting = false;
     }
     #endregion
     #region Slow routine
     public IEnumerator slowdownroutine()
     {
+        Debug.Log("called slowmo");
         slowdown = true;
         Time.timeScale = 0.01f;
         Time.fixedDeltaTime = 0.001f * Time.timeScale;
