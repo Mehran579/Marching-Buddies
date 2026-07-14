@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -57,6 +58,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (context.performed)
         {
+            //Debug.Log("Input Called");
             jumpinput_timer = jumpinput_time;
             if (coyotetimer > 0) 
             {
@@ -94,7 +96,7 @@ public class PlayerManager : MonoBehaviour
     #endregion
     private void Start()
     {
-        Debug.Log("give access to medsssssss1111");
+        //Debug.Log("give access to medsssssss1111");
         globalvolume.profile.TryGet(out bloom);
         DontDestroyOnLoad(this);
         DontDestroyOnLoad(_camera);
@@ -308,9 +310,15 @@ public class PlayerManager : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("missile"))
+        if (collision.CompareTag("final point"))
         {
-            transform.position = Vector2.zero;
+            //transform.position = Vector2.zero;
+            GameObject.FindWithTag("final player").transform.position = collision.transform.position;
+            GameObject newplayer = GameObject.FindWithTag("final player");
+            c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
+            gameObject.SetActive(false);
+            Destroy(collision.gameObject);
+            //StartCoroutine(zoomout());
         }
     }
     #endregion

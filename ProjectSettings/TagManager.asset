@@ -7,6 +7,9 @@ TagManager:
   - obs
   - missile
   - breakable
+  - final point
+  - final player
+  - global volume
   layers:
   - Default
   - TransparentFX

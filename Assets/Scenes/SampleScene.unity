@@ -2137,7 +2137,7 @@ GameObject:
   - component: {fileID: 1060096613}
   m_Layer: 0
   m_Name: Global Volume
-  m_TagString: Untagged
+  m_TagString: global volume
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3723,6 +3723,7 @@ GameObject:
   - component: {fileID: 1993002074}
   - component: {fileID: 1993002073}
   - component: {fileID: 1993002075}
+  - component: {fileID: 1993002076}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -3819,6 +3820,24 @@ MonoBehaviour:
     Time: 0.5
     Smoothing: 10
     IgnoreY: 1
+--- !u!114 &1993002076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993002071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e75f92fe3a858534ab464bc2a8c35dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  cam: {fileID: 1993002073}
+  composer: {fileID: 1993002075}
+  player: {fileID: 1556106570}
+  finalcrystal: {fileID: 0}
+  maxdistance: 20
+  smooth: 5
 --- !u!1 &2077365657
 GameObject:
   m_ObjectHideFlags: 0

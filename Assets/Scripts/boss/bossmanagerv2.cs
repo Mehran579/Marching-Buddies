@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class bossmanagerv2 : MonoBehaviour
 {
+    public Transform righthandlandposition;
+    public Transform lefthandlandposition;
     public bool isswiperight;
     bool busy;
     bool isshooting;
@@ -21,7 +23,7 @@ public class bossmanagerv2 : MonoBehaviour
     }
     private void Start()
     {
-        player = GameObject.FindWithTag("Player");
+        player = GameObject.FindWithTag("final player");
     }
     void decide()
     {
@@ -75,15 +77,16 @@ public class bossmanagerv2 : MonoBehaviour
     #region Right swipe
     public IEnumerator rightswiperoutine() 
     {
-        lefthand.gameObject.GetComponent<Collider2D>().enabled = false;
+        //lefthand.gameObject.GetComponent<Collider2D>().enabled = false;
         righthand.gameObject.GetComponent<TrailRenderer>().enabled = true;
-        righthand.gravityScale = 1f;
-        float t = 0.5f;
-        float gravity = righthand.gravityScale * Physics2D.gravity.y;
-        righthand.linearVelocity = new Vector2((28.5f - righthand.transform.localPosition.x) / t, (-1.68667f - righthand.transform.localPosition.y - (0.5f * gravity * t * t)) / t);
-        yield return new WaitForSeconds(t);
-        righthand.gravityScale = 0f;
-        righthand.linearVelocity = new Vector2(0, -50f);
+        StartCoroutine(ParabolaMove(righthand, righthandlandposition.position,1.5f,3f));
+        //righthand.gravityScale = 1f;
+        //float t = 0.5f;
+        //float gravity = righthand.gravityScale * Physics2D.gravity.y;
+        //righthand.linearVelocity = new Vector2((28.5f - righthand.transform.localPosition.x) / t, (-1.68667f - righthand.transform.localPosition.y - (0.5f * gravity * t * t)) / t);
+        //yield return new WaitForSeconds(t);
+        //righthand.gravityScale = 0f;
+        //righthand.linearVelocity = new Vector2(0, -50f);
         yield return new WaitForSeconds(1f);
         righthand.linearVelocity = new Vector2(-transform.right.x * 500f, 0);
         yield return new WaitForSeconds(1f);
@@ -110,20 +113,46 @@ public class bossmanagerv2 : MonoBehaviour
                 break;
         }
     }
+    IEnumerator ParabolaMove(Rigidbody2D rb, Vector2 endPos, float duration, float height)
+    {
+        Vector2 startPos = rb.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.fixedDeltaTime;
+
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            // Linear movement
+            Vector2 pos = Vector2.Lerp(startPos, endPos, t);
+
+            // Add parabolic offset
+            pos.y += 4f * height * t * (1f - t);
+
+            rb.MovePosition(pos);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.MovePosition(endPos);
+    }
     #endregion
     #region Left swipe
     public IEnumerator leftswiperoutine()
     {
-        righthand.gameObject.GetComponent<Collider2D>().enabled = false;
+        //righthand.gameObject.GetComponent<Collider2D>().enabled = false;
         lefthand.gameObject.GetComponent<TrailRenderer>().enabled = true;
-        lefthand.gravityScale = 1f;
-        float t = 0.5f;
-        float gravity = lefthand.gravityScale * Physics2D.gravity.y;
-        lefthand.linearVelocity = new Vector2((-28.5f - lefthand.transform.localPosition.x) / t, (-1.68667f - lefthand.transform.localPosition.y - (0.5f * gravity * t * t)) / t);
-        yield return new WaitForSeconds(t);
-        lefthand.gravityScale = 0f;
-        lefthand.linearVelocity = new Vector2(0, -50f);
-        yield return new WaitForSeconds(1f);
+        StartCoroutine(ParabolaMove(lefthand, lefthandlandposition.position,1.5f,3f));
+
+        //lefthand.gravityScale = 1f;
+        //float t = 0.5f;
+        //float gravity = lefthand.gravityScale * Physics2D.gravity.y;
+        //lefthand.linearVelocity = new Vector2((-28.5f - lefthand.transform.localPosition.x) / t, (-1.68667f - lefthand.transform.localPosition.y - (0.5f * gravity * t * t)) / t);
+        //yield return new WaitForSeconds(t);
+        //lefthand.gravityScale = 0f;
+        //lefthand.linearVelocity = new Vector2(0, -50f);
+        //yield return new WaitForSeconds(1f);
         lefthand.linearVelocity = new Vector2(transform.right.x * 500f, 0);
         yield return new WaitForSeconds(1f);
         lefthand.gameObject.GetComponent<TrailRenderer>().enabled = false;
@@ -153,18 +182,21 @@ public class bossmanagerv2 : MonoBehaviour
     #region Aerial Attack
     public IEnumerator aerialattack()
     {
-        while (Vector2.Distance(righthand.position, lefthand.position) >= 10.015f)
+        while (Vector2.Distance(righthand.position,new Vector2( lefthand.position.x,lefthand.linearVelocity.y+10)) >= 10.015f)
         {
-            righthand.MovePosition(Vector2.MoveTowards(righthand.position, lefthand.position, Vector2.Distance(righthand.position, lefthand.position)/0.5f * Time.fixedDeltaTime));
-            lefthand.MovePosition(Vector2.MoveTowards(lefthand.position, righthand.position, Vector2.Distance(righthand.position, lefthand.position)/0.5f * Time.fixedDeltaTime));
-            yield return new WaitForFixedUpdate();
+            while(Vector2.Distance(lefthand.position, new Vector2(righthand.position.x, righthand.linearVelocity.y + 10)) >= 10.015f)
+            {
+                righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(lefthand.position.x, lefthand.linearVelocity.y + 10), Vector2.Distance(righthand.position, lefthand.position) / 0.5f * Time.fixedDeltaTime));
+                lefthand.MovePosition(Vector2.MoveTowards(lefthand.position, new Vector2(righthand.position.x, righthand.linearVelocity.y + 10), Vector2.Distance(righthand.position, lefthand.position) / 0.5f * Time.fixedDeltaTime));
+                yield return new WaitForFixedUpdate();
+            }
         }
         Debug.Log("isstuckhere");
         lefthand.transform.SetParent(righthand.transform);
         lefthand.simulated = false;
-        while (Vector2.Distance(righthand.position,new Vector2(righthand.position.x, 9.31333f)) > 0.01)
+        while (Vector2.Distance(righthand.position,new Vector2(righthand.position.x, 14)) > 0.01)
         {
-            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(righthand.position.x, 9.31333f),20*Time.fixedDeltaTime));
+            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(righthand.position.x, 14 ),player.GetComponent<Rigidbody2D>().linearVelocity.magnitude*Time.fixedDeltaTime));
             yield return new WaitForFixedUpdate();
         }
         Debug.Log("exited");
