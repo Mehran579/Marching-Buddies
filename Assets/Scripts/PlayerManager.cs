@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -57,6 +58,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (context.performed)
         {
+            //Debug.Log("Input Called");
             jumpinput_timer = jumpinput_time;
             if (coyotetimer > 0) 
             {
@@ -93,87 +95,95 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
     private void Start()
+{
+    // Only get Bloom if a Global Volume is assigned
+    if (globalvolume != null && globalvolume.profile != null)
     {
-        Debug.Log("give access to medsssssss1111");
         globalvolume.profile.TryGet(out bloom);
-        DontDestroyOnLoad(this);
-        DontDestroyOnLoad(_camera);
-        DontDestroyOnLoad(c_camera);
-        DontDestroyOnLoad(globalvolume);
     }
 
-    private void Update()
+    // IMPORTANT:
+    // Remove DontDestroyOnLoad because the level restarts.
+    // A fresh player should be created every time.
+}
+   private void Update()
+{
+    // SPEED
+    if (Mathf.Abs(transform.GetChild(0).localPosition.x - 2f) < 0.01f)
     {
-        if(transform.GetChild(0).localPosition.x == 2) //speed head
-        {
-            candash = true;
-            canpush = false;
-            ishidden = false;
-            ischarged = false;
-            Jump = 15;
-            MoveSpeed = speedboost;
-            //bloom.intensity.value = 0;
-            UnHide();
-        }
-        else if (transform.GetChild(1).localPosition.x == 2)  //jump head
-        {
-            candash = false;
-            canpush = false;
-            ishidden = false;
-            ischarged = false;
-            Jump = jumpboost;
-            MoveSpeed = 20;
-            //bloom.intensity.value = 0;
-            UnHide();
-        }
-        else if(transform.GetChild(2).localPosition.x==2) //invisi head
-        {
-            candash = false;
-            canpush = false;
-            ishidden = true;
-            ischarged = false;
-            Jump = 15;
-            MoveSpeed = 20;
-            //bloom.intensity.value = 0;
-            Hide();
-        }
-        else if(transform.GetChild(3).localPosition.x == 2)     //strenght head
-        {
-            candash = true;
-            canpush = true;
-            ishidden = false;
-            ischarged = false;
-            Jump = 15;
-            MoveSpeed = 20;
-            //bloom.intensity.value = 0;
-            UnHide();
-        }
-        else if(transform.GetChild(4).localPosition.x == 2) //charge head
-        {
-            candash = false;
-            canpush = false;
-            ishidden = false;
-            ischarged = true;
-            Jump = 15;
-            MoveSpeed = 20;
-            //bloom.intensity.value = 3;
-            UnHide();
-        }
-        if(ischarged)
-        {
-            foreach (GameObject p in glowingsprites)
-            {
-                p.SetActive(true);
-            }
-        }
-        else
-        {
-            foreach (GameObject p in glowingsprites)
-            {
-                p.SetActive(false);
-            }
-        }
+        candash = true;
+        canpush = false;
+        ishidden = false;
+        ischarged = false;
+
+        Jump = 15;
+        MoveSpeed = speedboost;
+
+        UnHide();
     }
+
+    // JUMP
+    else if (Mathf.Abs(transform.GetChild(1).localPosition.x - 2f) < 0.01f)
+    {
+        candash = false;
+        canpush = false;
+        ishidden = false;
+        ischarged = false;
+
+        Jump = jumpboost;
+        MoveSpeed = 20;
+
+        UnHide();
+    }
+
+    // INVISIBILITY
+    else if (Mathf.Abs(transform.GetChild(2).localPosition.x - 2f) < 0.01f)
+    {
+        candash = false;
+        canpush = false;
+        ishidden = true;
+        ischarged = false;
+
+        Jump = 15;
+        MoveSpeed = 20;
+
+        Hide();
+    }
+
+    // STRENGTH
+    else if (Mathf.Abs(transform.GetChild(3).localPosition.x - 2f) < 0.01f)
+    {
+        candash = true;
+        canpush = true;
+        ishidden = false;
+        ischarged = false;
+
+        Jump = 15;
+        MoveSpeed = 20;
+
+        UnHide();
+    }
+
+    // CHARGE
+    else if (Mathf.Abs(transform.GetChild(4).localPosition.x - 2f) < 0.01f)
+    {
+        candash = false;
+        canpush = false;
+        ishidden = false;
+        ischarged = true;
+
+        Jump = 15;
+        MoveSpeed = 20;
+
+        UnHide();
+    }
+
+    foreach (GameObject g in glowingsprites)
+    {
+        g.SetActive(ischarged);
+    }
+}
+
     private void FixedUpdate()
     {
         if (isdashing) return;
@@ -250,19 +260,19 @@ public class PlayerManager : MonoBehaviour
     #endregion
     #region Head location swapper
     void swaplocations()
+{
+    foreach (Transform child in transform)
     {
-        foreach(Transform child in transform)
+        if (Mathf.Abs(child.localPosition.x - 2f) < 0.01f)
         {
-            if(child.localPosition.x == 2)
-            {
-                child.localPosition = new Vector2(-2, child.localPosition.y);
-            }
-            else
-            {
-                child.localPosition = new Vector2(child.localPosition.x + 1, child.localPosition.y);
-            }
+            child.localPosition = new Vector2(-2, child.localPosition.y);
+        }
+        else
+        {
+            child.localPosition = new Vector2(child.localPosition.x + 1, child.localPosition.y);
         }
     }
+}
     #endregion
     #region Player Visibility
     void Hide()
@@ -306,13 +316,18 @@ public class PlayerManager : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+   private void OnTriggerEnter2D(Collider2D collision)
+{
+    if (collision.CompareTag("Finish"))
     {
-        if (collision.CompareTag("missile"))
-        {
-            transform.position = Vector2.zero;
-        }
+        GameObject.FindWithTag("final player").transform.position = collision.transform.position;
+        GameObject newplayer = GameObject.FindWithTag("final player");
+        c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
+        gameObject.SetActive(false);
+        Destroy(collision.gameObject);
+    }
+}
     }
     #endregion
-}
+
 

@@ -1,11 +1,18 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerlocator : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GameObject.FindWithTag("Player").transform.position = Vector3.zero;
+        if(SceneManager.GetActiveScene().name=="boss scene 3")
+        {
+            GameObject.FindWithTag("Player").transform.position = new Vector2(-24, -14);
+        }
+        else
+        {
+            GameObject.FindWithTag("Player").transform.position = Vector3.zero;
+        }
     }
 
     // Update is called once per frame

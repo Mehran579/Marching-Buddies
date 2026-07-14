@@ -7,8 +7,8 @@ TagManager:
   - obs
   - missile
   - breakable
-  - ground layer
-  layers:
+
+  Layers:
   - Default
   - TransparentFX
   - Ignore Raycast
