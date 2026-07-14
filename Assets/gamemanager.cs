@@ -4,7 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public GameObject startPanel;
 
-    void Start()
+    private void Start()
     {
         Time.timeScale = 0f;
         startPanel.SetActive(true);

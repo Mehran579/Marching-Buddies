@@ -7,6 +7,7 @@ TagManager:
   - obs
   - missile
   - breakable
+  - ground layer
   layers:
   - Default
   - TransparentFX
