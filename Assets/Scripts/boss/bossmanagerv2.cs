@@ -80,7 +80,7 @@ public class bossmanagerv2 : MonoBehaviour
         }
         if (followplayer )
         {
-            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(player.transform.position.x+5,righthand.position.y), 40 * Time.fixedDeltaTime));
+            righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(player.transform.position.x+5,righthand.position.y), 60 * Time.fixedDeltaTime));
         }
     }
     #region Right swipe
@@ -240,8 +240,8 @@ public class bossmanagerv2 : MonoBehaviour
         Rigidbody2D p = Instantiate(projectile,new Vector2(0,10),Quaternion.identity).GetComponent<Rigidbody2D>();
         float t = 0f;
         float duration = 0.75f;
-        p1 = Random.insideUnitCircle * 30f;
-        p2 = Random.insideUnitCircle * 30f;
+        p1 = Random.insideUnitCircle * 60;
+        p2 = Random.insideUnitCircle * 60f;
         p3 = player.transform.position;
         while (t < 1f)
         {

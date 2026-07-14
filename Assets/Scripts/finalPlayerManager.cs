@@ -10,7 +10,9 @@ public class finalPlayerManager : MonoBehaviour
 {
     public Tilemap tilemap;
     bool tilescleared;
-    //public GameObject[] glowingsprites;
+    bool showhead;
+    GameObject currentstance;
+    public GameObject glowingsprite;
     //public GameObject _camera;
     //public GameObject c_camera;
     public Rigidbody2D playerrb;
@@ -80,7 +82,7 @@ public class finalPlayerManager : MonoBehaviour
         if (isdashing) return;
         if (context.performed)
         {
-            swaplocations();
+            showstances();
         }
     }
     public void OnDash(InputAction.CallbackContext context)
@@ -110,76 +112,88 @@ public class finalPlayerManager : MonoBehaviour
 
     private void Update()
     {
-        //if (transform.GetChild(0).localPosition.x == 2) //speed head
-        //{
-        //    candash = true;
-        //    canpush = false;
-        //    ishidden = false;
-        //    ischarged = false;
-        //    Jump = 15;
-        //    MoveSpeed = speedboost;
-        //    //bloom.intensity.value = 0;
-        //    UnHide();
-        //}
-        //else if (transform.GetChild(1).localPosition.x == 2)  //jump head
-        //{
-        //    candash = false;
-        //    canpush = false;
-        //    ishidden = false;
-        //    ischarged = false;
-        //    Jump = jumpboost;
-        //    MoveSpeed = 20;
-        //    //bloom.intensity.value = 0;
-        //    UnHide();
-        //}
-        //else if (transform.GetChild(2).localPosition.x == 2) //invisi head
-        //{
-        //    candash = false;
-        //    canpush = false;
-        //    ishidden = true;
-        //    ischarged = false;
-        //    Jump = 15;
-        //    MoveSpeed = 20;
-        //    //bloom.intensity.value = 0;
-        //    Hide();
-        //}
-        //else if (transform.GetChild(3).localPosition.x == 2)     //strenght head
-        //{
-        //    candash = true;
-        //    canpush = true;
-        //    ishidden = false;
-        //    ischarged = false;
-        //    Jump = 15;
-        //    MoveSpeed = 20;
-        //    //bloom.intensity.value = 0;
-        //    UnHide();
-        //}
-        //else if (transform.GetChild(4).localPosition.x == 2) //charge head
-        //{
-        //    candash = false;
-        //    canpush = false;
-        //    ishidden = false;
-        //    ischarged = true;
-        //    Jump = 15;
-        //    MoveSpeed = 20;
-        //    //bloom.intensity.value = 3;
-        //    UnHide();
-        //}
-        //if (ischarged)
-        //{
-        //    foreach (GameObject p in glowingsprites)
-        //    {
-        //        p.SetActive(true);
-        //    }
-        //}
-        //else
-        //{
-        //    foreach (GameObject p in glowingsprites)
-        //    {
-        //        p.SetActive(false);
-        //    }
-        //}
-        if(gameObject.GetComponent<SpriteRenderer>().enabled == true&&!tilescleared)
+    
+        if (Mouse.current.leftButton.wasPressedThisFrame && showhead)
+        {
+            Vector2 world = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            RaycastHit2D hit = Physics2D.Raycast(world, Vector2.zero);
+            foreach(Transform child in transform.parent)
+            {
+                if (child.name == "glowsprite") return;
+                if (hit.collider.name == child.name)
+                {
+                    child.localScale = new Vector3(6.5f, 0, 0);
+                }
+                else
+                {
+                    child.localScale = new Vector3(5, 5, 5);
+                }
+            }
+        }
+        if (transform.GetChild(4).localScale.x == 6.5f) //speed head
+        {
+            candash = true;
+            canpush = false;
+            ishidden = false;
+            ischarged = false;
+            Jump = 30;
+            MoveSpeed = speedboost;
+            //bloom.intensity.value = 0;
+            UnHide();
+        }
+        else if (transform.GetChild(0).localScale.x == 6.5f)  //jump head
+        {
+            candash = false;
+            canpush = false;
+            ishidden = false;
+            ischarged = false;
+            Jump = jumpboost;
+            MoveSpeed = 30;
+            //bloom.intensity.value = 0;
+            UnHide();
+        }
+        else if (transform.GetChild(1).localScale.x == 6.5f) //invisi head
+        {
+            candash = false;
+            canpush = false;
+            ishidden = true;
+            ischarged = false;
+            Jump = 30;
+            MoveSpeed = 30;
+            //bloom.intensity.value = 0;
+            Hide();
+        }
+        else if (transform.GetChild(2).localScale.x == 3)     //strenght head
+        {
+            candash = true;
+            canpush = true;
+            ishidden = false;
+            ischarged = false;
+            Jump = 30;
+            MoveSpeed = 30;
+            //bloom.intensity.value = 0;
+            UnHide();
+        }
+        else if (transform.GetChild(3).localScale.x == 6.5f) //charge head
+        {
+            candash = false;
+            canpush = false;
+            ishidden = false;
+            ischarged = true;
+            Jump = 30;
+            MoveSpeed = 30;
+            //bloom.intensity.value = 3;
+            UnHide();
+        }
+        if (ischarged)
+        {
+            glowingsprite.SetActive(true);
+        }
+        else
+        {
+            glowingsprite.SetActive(false);
+        }
+        if (gameObject.GetComponent<SpriteRenderer>().enabled == true&&!tilescleared)
         {
             for (int x = -73; x < 83; x++)
             {
@@ -266,40 +280,30 @@ public class finalPlayerManager : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position - transform.up * castdistance, raycastradius);
     }
     #endregion
-    #region Head location swapper
-    void swaplocations()
+    #region Stance swapper
+    void showstances()
     {
         foreach (Transform child in transform)
         {
-            if (child.localPosition.x == 2)
-            {
-                child.localPosition = new Vector2(-2, child.localPosition.y);
-            }
-            else
-            {
-                child.localPosition = new Vector2(child.localPosition.x + 1, child.localPosition.y);
-            }
+            if (child.name == "glowsprite") continue;
+            showhead = !showhead;
+            child.gameObject.SetActive(showhead);
         }
     }
     #endregion
     #region Player Visibility
     void Hide()
     {
-        foreach (Transform child in transform)
-        {
-            Color tempcolor = child.GetComponent<SpriteRenderer>().color;
+            Color tempcolor = GetComponent<SpriteRenderer>().color;
             tempcolor.a = 0.3f;
-            child.GetComponent<SpriteRenderer>().color = tempcolor;
-        }
+            GetComponent<SpriteRenderer>().color = tempcolor;
+     
     }
     void UnHide()
     {
-        foreach (Transform child in transform)
-        {
-            Color tempcolor = child.GetComponent<SpriteRenderer>().color;
+            Color tempcolor = GetComponent<SpriteRenderer>().color;
             tempcolor.a = 1f;
-            child.GetComponent<SpriteRenderer>().color = tempcolor;
-        }
+            GetComponent<SpriteRenderer>().color = tempcolor;
     }
     #endregion
     #region Player Collisions
