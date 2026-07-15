@@ -16,6 +16,7 @@ public class finalPlayerManager : MonoBehaviour
     //public List <Vector3> headslocalposition = new List<Vector3>();
     //public List <GameObject> stances = new List<GameObject>();
     //public GameObject[] stances;
+    bool shiftpressed;
     [Header("Health")]
     bool canhit = true;
     int health = 3;
@@ -101,7 +102,11 @@ public class finalPlayerManager : MonoBehaviour
         if (context.performed)
         {
             showstances();
-        }
+            if (!tilescleared)
+            {
+                StartCoroutine(startfight());
+            }
+    }
     }
     public void OnDash(InputAction.CallbackContext context)
     {
@@ -116,6 +121,15 @@ public class finalPlayerManager : MonoBehaviour
                 StartCoroutine(dash(dashduration));
             }
         }
+    }
+    public ParticleSystem groundbreak;
+    public IEnumerator startfight()
+    {
+        yield return new WaitForSeconds(1.5f);
+        shiftpressed = true;
+        groundbreak.Play();
+        bossAnimator.gameObject.SetActive(true);
+        enemyhealth.gameObject.SetActive(true);
     }
     #endregion
     private void Start()
@@ -243,23 +257,33 @@ public class finalPlayerManager : MonoBehaviour
         {
             glowingsprite.SetActive(false);
         }
-        if (gameObject.GetComponent<SpriteRenderer>().enabled == true&&!tilescleared)
+        if (gameObject.GetComponent<SpriteRenderer>().enabled == true&&!tilescleared && shiftpressed)
         {
+            tilescleared = true;
             for (int x = -73; x < 83; x++)
             {
                 for (int y = -6; y < 49; y++)
                 {
-                    //Debug.Log(new Vector3Int(x, y));
+                    if(tilemap.HasTile(new Vector3Int(x, y, 0)))
+                    {
+                        tilemap.SetTile(new Vector3Int(x, y), null);
+                    }
+                }
+            }
+            for(int x = -73; x < 83; x++)
+            {
+                for (int  y = -38;  y < -12;  y++)
+                {
                     tilemap.SetTile(new Vector3Int(x,y),null);
                 }
             }
-            tilescleared = true;
         }
         if(health == 0)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
+    //public GameObject temp; 
     private void FixedUpdate()
     {
         if (isdashing) return;
@@ -382,30 +406,34 @@ public class finalPlayerManager : MonoBehaviour
     //        collision.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
     //    }
     //}1`
+    public GameObject playerattack;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("enemy head child is ",bossAnimator.transform.GetChild(0));
         if (!canhit) return;
-        if (collision.CompareTag("boss hands")&&collision.transform != bossAnimator.transform.GetChild(0))
+        if (collision.CompareTag("boss hands")&& collision.transform != bossAnimator.transform.GetChild(0))
         {
             //Debug.Log("damage taken");
+            hitcooldown();
             hitstop(hitstopduration);
             health -= 1;
             Destroy(playerhealth[health]);
-        }
-        if(collision.gameObject == bossAnimator.transform.GetChild(0).gameObject && ischarged)
-        {
-            Debug.Log("bosshit");
-            enemyhealth.value -= 1;
         }
         if(collision.CompareTag("boss_projectile"))
         {
             Destroy(collision.gameObject, 0.2f);
             if (!ishidden)
             {
+                hitcooldown();
                 health -= 1;
                 Destroy(playerhealth[health]);
             }
+        }
+        if(collision.gameObject == bossAnimator.transform.GetChild(0).gameObject && ischarged)
+        {
+            Debug.Log("bosshit");
+            enemyhealth.value -= 1;
+            Instantiate(playerattack, collision.ClosestPoint(transform.position), Quaternion.identity);
         }
     }
     #endregion

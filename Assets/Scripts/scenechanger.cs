@@ -26,7 +26,7 @@ public class scenechanger : MonoBehaviour
     }
     public void bosslevel()
     {
-        SceneManager.LoadScene("boss scene 3");
+        SceneManager.LoadScene("boss transiition room");
     }
     
 }

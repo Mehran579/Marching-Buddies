@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 public class PlayerManager : MonoBehaviour
 {
     public GameObject[] glowingsprites;
@@ -320,16 +321,18 @@ public class PlayerManager : MonoBehaviour
     {
     if (collision.CompareTag("final point"))
         {
-        GameObject.FindWithTag("final player").transform.position = collision.transform.position;
-        GameObject newplayer = GameObject.FindWithTag("final player");
+            SceneManager.LoadScene("boss scene 3");
+        //GameObject.FindWithTag("final player").transform.position = collision.transform.position;
+        //GameObject newplayer = GameObject.FindWithTag("final player");
             //c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
-            c_camera.SetActive(false);
-            _camera.SetActive(false);
-            GetComponent<PlayerInput>().enabled = false;
-            newplayer.GetComponent<PlayerInput>().enabled = true;
-            newplayer.GetComponent<finalPlayerManager>().enabled = true;
-        Destroy(collision.gameObject);
-        gameObject.SetActive(false);
+            //c_camera.SetActive(false);
+            //_camera.SetActive(false);
+            //GetComponent<PlayerInput>().enabled = false;
+            //newplayer.GetComponent<PlayerInput>().enabled = true;
+            //newplayer.GetComponent<finalPlayerManager>().enabled = true;
+        //Destroy(gameObject.transform.root);
+        //gameObject.SetActive(false);
+
         }
     }
     #endregion

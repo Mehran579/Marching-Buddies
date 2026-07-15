@@ -20,7 +20,7 @@ public class cinemachinemanager : MonoBehaviour
     }
     void Update()
     {
-        if(SceneManager.GetActiveScene().name == "boss scene 3" && finalcrystal != null)
+        if(SceneManager.GetActiveScene().name == "boss transiition room"  && finalcrystal != null)
         {
 
             float t = Mathf.InverseLerp(0f, maxdistance, Vector2.Distance(player.position, finalcrystal.position));
@@ -49,10 +49,8 @@ public class cinemachinemanager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("Loaded: " + scene.name);
-        if (SceneManager.GetActiveScene().name == "boss scene 3")
+        if (SceneManager.GetActiveScene().name == "boss transiition room")
         {
-            //Debug.Log("scene 3 is active");
             finalcrystal = GameObject.FindWithTag("final point").transform;
         }    
     }

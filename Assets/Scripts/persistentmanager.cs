@@ -16,15 +16,22 @@ public class persistentmanager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    private void Update()
+    void OnEnable()
     {
-        if(SceneManager.GetActiveScene().name == "boss scene 3"&&!release && transform.childCount > 0)
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "boss scene 3") // Scene where you don't want it
         {
-            for (int i = transform.childCount - 1; i >= 0; i--)
-            {
-                transform.GetChild(i).SetParent(null);
-            }
-            release = true;
+            Destroy(gameObject);
+            instance = null;
         }
     }
 }
