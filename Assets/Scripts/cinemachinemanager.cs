@@ -32,7 +32,9 @@ public class cinemachinemanager : MonoBehaviour
         }
         if(cam.Target.TrackingTarget.gameObject.CompareTag("final player"))
         {
-            cam.Lens.OrthographicSize = Mathf.Lerp(cam.Lens.OrthographicSize,40,smooth* Time.deltaTime);
+            cam.Lens.OrthographicSize = Mathf.Lerp(cam.Lens.OrthographicSize,45,smooth* Time.deltaTime);
+            cam.GetComponent<CinemachinePositionComposer>().Composition.DeadZone.Size = new Vector2(40f, 40f);
+            //cam.GetComponent<CinemachinePositionComposer>()
         }
     }
     void OnEnable()

@@ -317,17 +317,20 @@ public class PlayerManager : MonoBehaviour
         }
     }
    private void OnTriggerEnter2D(Collider2D collision)
-{
-    if (collision.CompareTag("Finish"))
     {
+    if (collision.CompareTag("final point"))
+        {
         GameObject.FindWithTag("final player").transform.position = collision.transform.position;
         GameObject newplayer = GameObject.FindWithTag("final player");
         c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
-        gameObject.SetActive(false);
+            GetComponent<PlayerInput>().enabled = false;
+            newplayer.GetComponent<PlayerInput>().enabled = true;
+            newplayer.GetComponent<finalPlayerManager>().enabled = true;
         Destroy(collision.gameObject);
-    }
-}
+        gameObject.SetActive(false);
+        }
     }
     #endregion
+}
 
 
