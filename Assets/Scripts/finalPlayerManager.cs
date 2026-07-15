@@ -16,11 +16,12 @@ public class finalPlayerManager : MonoBehaviour
     //public List <Vector3> headslocalposition = new List<Vector3>();
     //public List <GameObject> stances = new List<GameObject>();
     //public GameObject[] stances;
-    [Header("Healt")]
+    [Header("Health")]
     bool canhit = true;
     int health = 3;
     public GameObject[] playerhealth;
     public Animator bossAnimator;
+    public GameObject _camera;
 
     public Slider enemyhealth;
     public float hitstopduration;
@@ -119,6 +120,7 @@ public class finalPlayerManager : MonoBehaviour
     #endregion
     private void Start()
     {
+        _camera.SetActive(true);
         //foreach (Transform child in transform)
         //{
         //    //Debug.Log("disabling");

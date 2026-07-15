@@ -16,7 +16,7 @@ public class cinemachinemanager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(SceneManager.GetActiveScene().name);
+        //Debug.Log(SceneManager.GetActiveScene().name);
     }
     void Update()
     {
@@ -35,7 +35,7 @@ public class cinemachinemanager : MonoBehaviour
             cam.Lens.OrthographicSize = Mathf.Lerp(cam.Lens.OrthographicSize,45,smooth* Time.deltaTime);
             cam.GetComponent<CinemachinePositionComposer>().Composition.DeadZone.Size = new Vector2(40f, 40f);
             //cam.GetComponent<CinemachinePositionComposer>()
-        }
+        }   
     }
     void OnEnable()
     {
@@ -52,7 +52,7 @@ public class cinemachinemanager : MonoBehaviour
         Debug.Log("Loaded: " + scene.name);
         if (SceneManager.GetActiveScene().name == "boss scene 3")
         {
-            Debug.Log("scene 3 is active");
+            //Debug.Log("scene 3 is active");
             finalcrystal = GameObject.FindWithTag("final point").transform;
         }    
     }
