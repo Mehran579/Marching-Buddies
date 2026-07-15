@@ -96,13 +96,14 @@ public class finalPlayerManager : MonoBehaviour
             coyotetimer = 0;
         }
     }
+    public bool fightroutinestarted;
     public void OnShift(InputAction.CallbackContext context)
     {
         if (isdashing) return;
         if (context.performed)
         {
             showstances();
-            if (!tilescleared)
+            if (!tilescleared && !fightroutinestarted)
             {
                 StartCoroutine(startfight());
             }
@@ -123,13 +124,20 @@ public class finalPlayerManager : MonoBehaviour
         }
     }
     public ParticleSystem groundbreak;
+    public GameObject tutorialtext;
+    public GameObject damagetext;
     public IEnumerator startfight()
     {
+        fightroutinestarted = true;
+        tutorialtext.SetActive(false);
         yield return new WaitForSeconds(1.5f);
         shiftpressed = true;
         groundbreak.Play();
         bossAnimator.gameObject.SetActive(true);
         enemyhealth.gameObject.SetActive(true);
+        damagetext.SetActive(true);
+        yield return new WaitForSeconds(4f);
+        damagetext.SetActive(false);
     }
     #endregion
     private void Start()
@@ -282,6 +290,10 @@ public class finalPlayerManager : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
+        if(enemyhealth.value == 0)
+        {
+            SceneManager.LoadScene("last scene");
+        }
     }
     //public GameObject temp; 
     private void FixedUpdate()
@@ -418,6 +430,7 @@ public class finalPlayerManager : MonoBehaviour
             hitstop(hitstopduration);
             health -= 1;
             Destroy(playerhealth[health]);
+            StartCoroutine(shake(1,0.5f));
         }
         if(collision.CompareTag("boss_projectile"))
         {
@@ -431,12 +444,26 @@ public class finalPlayerManager : MonoBehaviour
         }
         if(collision.gameObject == bossAnimator.transform.GetChild(0).gameObject && ischarged)
         {
+            StartCoroutine(shake(0.2f,3f));
             Debug.Log("bosshit");
             enemyhealth.value -= 1;
             Instantiate(playerattack, collision.ClosestPoint(transform.position), Quaternion.identity);
         }
     }
     #endregion
+    public IEnumerator shake(float duration, float magnitude)
+    {
+        Vector3 pos = Camera.main.transform.position;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            Vector2 offset = Random.insideUnitCircle * magnitude;
+            Camera.main.transform.localPosition = new Vector3(pos.x + offset.x, pos.y + offset.y, pos.z);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Camera.main.transform.localPosition = pos;
+    }
     #region HIt stop
     public IEnumerator hitstop(float duration)
     {

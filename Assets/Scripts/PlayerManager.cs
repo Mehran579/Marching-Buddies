@@ -321,17 +321,17 @@ public class PlayerManager : MonoBehaviour
     {
     if (collision.CompareTag("final point"))
         {
+            GetComponent<PlayerInput>().enabled = false;
             SceneManager.LoadScene("boss scene 3");
         //GameObject.FindWithTag("final player").transform.position = collision.transform.position;
         //GameObject newplayer = GameObject.FindWithTag("final player");
             //c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
             //c_camera.SetActive(false);
             //_camera.SetActive(false);
-            //GetComponent<PlayerInput>().enabled = false;
             //newplayer.GetComponent<PlayerInput>().enabled = true;
             //newplayer.GetComponent<finalPlayerManager>().enabled = true;
-        //Destroy(gameObject.transform.root);
-        //gameObject.SetActive(false);
+            //Destroy(gameObject.transform.root);
+            //gameObject.SetActive(false);
 
         }
     }
