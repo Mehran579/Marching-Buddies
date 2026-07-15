@@ -98,15 +98,15 @@ public class PlayerManager : MonoBehaviour
 {
     // Only get Bloom if a Global Volume is assigned
     if (globalvolume != null && globalvolume.profile != null)
-    {
-        globalvolume.profile.TryGet(out bloom);
-    }
+        {
+            globalvolume.profile.TryGet(out bloom);
+        }
 
-    // IMPORTANT:
-    // Remove DontDestroyOnLoad because the level restarts.
-    // A fresh player should be created every time.
-}
-   private void Update()
+        // IMPORTANT:
+        // Remove DontDestroyOnLoad because the level restarts.
+        // A fresh player should be created every time.
+    }
+    private void Update()
 {
     // SPEED
     if (Mathf.Abs(transform.GetChild(0).localPosition.x - 2f) < 0.01f)

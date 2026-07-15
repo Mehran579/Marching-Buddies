@@ -3291,7 +3291,7 @@ MonoBehaviour:
   Jump: 15
   candash: 0
   canpush: 0
-  ishidden: 0
+  ishidden: 1
   ischarged: 0
   speedboost: 25
   jumpboost: 19.3

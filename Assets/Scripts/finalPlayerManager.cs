@@ -1,13 +1,30 @@
 using System.Collections;
 using Unity.Cinemachine;
+using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
+using JetBrains.Annotations;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class finalPlayerManager : MonoBehaviour
 {
+    //public List <Vector3> headslocalposition = new List<Vector3>();
+    //public List <GameObject> stances = new List<GameObject>();
+    //public GameObject[] stances;
+    [Header("Healt")]
+    bool canhit = true;
+    int health = 3;
+    public GameObject[] playerhealth;
+    public Animator bossAnimator;
+
+    public Slider enemyhealth;
+    public float hitstopduration;
+
     public Tilemap tilemap;
     bool tilescleared;
     bool showhead;
@@ -62,7 +79,7 @@ public class finalPlayerManager : MonoBehaviour
     }
     public void OnJump(InputAction.CallbackContext context)       //Jump Input
     {
-        Debug.Log("jump called");
+        //Debug.Log("jump called");
         if (context.performed)
         {
             jumpinput_timer = jumpinput_time;
@@ -91,7 +108,7 @@ public class finalPlayerManager : MonoBehaviour
         {
             if (canpush)
             {
-                StartCoroutine(dash(dashduration / 2));
+                StartCoroutine(dash(dashduration / 2.5f));
             }
             else
             {
@@ -102,6 +119,16 @@ public class finalPlayerManager : MonoBehaviour
     #endregion
     private void Start()
     {
+        //foreach (Transform child in transform)
+        //{
+        //    //Debug.Log("disabling");
+        //    child.gameObject.SetActive(false);
+        //    //if(child.gameObject.name != "glowsprite")
+        //    //{
+        //        //headslocalposition.Add(child.position);
+        //        //stances.Add(child.gameObject);
+        //    //}
+        //}
         //Debug.Log("give access to medsssssss1111");
         //globalvolume.profile.TryGet(out bloom);
         //DontDestroyOnLoad(this);
@@ -112,23 +139,44 @@ public class finalPlayerManager : MonoBehaviour
 
     private void Update()
     {
-    
+        //if(Mathf.Sign(movement.x) > 0)
+        //{
+        //    for (int i = 0; i < stances.Count; i++)
+        //    {
+        //        GameObject child = stances[i];
+        //        Vector3 pos = headslocalposition[i];
+
+        //        child.transform.localPosition = pos;
+        //    }
+        //}
+        //else
+        //{
+        //    for (int i = 0; i < stances.Count; i++)
+        //    {
+        //        GameObject child = stances[i];
+        //        Vector3 pos = headslocalposition[i];
+
+        //        child.transform.localPosition = new Vector3(-pos.x,pos.y,pos.z);
+        //    }
+        //}
         if (Mouse.current.leftButton.wasPressedThisFrame && showhead)
         {
+            //Debug.Log("disabling in update");
             Vector2 world = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             RaycastHit2D hit = Physics2D.Raycast(world, Vector2.zero);
-            foreach(Transform child in transform.parent)
+            foreach(Transform child in transform)
             {
-                if (child.name == "glowsprite") return;
-                if (hit.collider.name == child.name)
+                if (child.name == "glowsprite") continue;
+                if ( hit.collider!=null && hit.collider.name == child.name)
                 {
-                    child.localScale = new Vector3(6.5f, 0, 0);
+                    child.localScale = new Vector3(6.5f, 6.5f, 6.5f );
                 }
                 else
                 {
                     child.localScale = new Vector3(5, 5, 5);
                 }
             }
+            showstances();
         }
         if (transform.GetChild(4).localScale.x == 6.5f) //speed head
         {
@@ -163,7 +211,7 @@ public class finalPlayerManager : MonoBehaviour
             //bloom.intensity.value = 0;
             Hide();
         }
-        else if (transform.GetChild(2).localScale.x == 3)     //strenght head
+        else if (transform.GetChild(2).localScale.x == 6.5f)     //strenght head
         {
             candash = true;
             canpush = true;
@@ -204,6 +252,10 @@ public class finalPlayerManager : MonoBehaviour
                 }
             }
             tilescleared = true;
+        }
+        if(health == 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
     private void FixedUpdate()
@@ -247,12 +299,12 @@ public class finalPlayerManager : MonoBehaviour
         playerrb.linearVelocity = new Vector2(dashSpeed * transform.localScale.x, playerrb.linearVelocity.y);
         float oggraivty = playerrb.gravityScale;
         playerrb.gravityScale = 0;
-        Debug.Log(playerrb.linearVelocity.x);
+        //Debug.Log(playerrb.linearVelocity.x);
         yield return null;
-        Debug.Log(playerrb.linearVelocity.x);
+        //Debug.Log(playerrb.linearVelocity.x);
 
         yield return null;
-        Debug.Log(playerrb.linearVelocity.x);
+        //Debug.Log(playerrb.linearVelocity.x);
 
         yield return new WaitForSeconds(dashduration);
         playerrb.linearVelocity = new Vector2(0, playerrb.linearVelocity.y);
@@ -283,10 +335,10 @@ public class finalPlayerManager : MonoBehaviour
     #region Stance swapper
     void showstances()
     {
+        showhead = !showhead;
         foreach (Transform child in transform)
         {
             if (child.name == "glowsprite") continue;
-            showhead = !showhead;
             child.gameObject.SetActive(showhead);
         }
     }
@@ -328,19 +380,52 @@ public class finalPlayerManager : MonoBehaviour
     //        collision.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
     //    }
     //}1`
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.CompareTag("final point"))
-    //    {
-    //        //transform.position = Vector2.zero;
-    //        GameObject.FindWithTag("final player").transform.position = collision.transform.position;
-    //        GameObject newplayer = GameObject.FindWithTag("final player");
-    //        c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
-    //        gameObject.SetActive(false);
-    //        Destroy(collision.gameObject);
-    //        //StartCoroutine(zoomout());
-    //    }
-    //}
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //Debug.Log("enemy head child is ",bossAnimator.transform.GetChild(0));
+        if (!canhit) return;
+        if (collision.CompareTag("boss hands")&&collision.transform != bossAnimator.transform.GetChild(0))
+        {
+            //Debug.Log("damage taken");
+            hitstop(hitstopduration);
+            health -= 1;
+            Destroy(playerhealth[health]);
+        }
+        if(collision.gameObject == bossAnimator.transform.GetChild(0).gameObject && ischarged)
+        {
+            Debug.Log("bosshit");
+            enemyhealth.value -= 1;
+        }
+        if(collision.CompareTag("boss_projectile"))
+        {
+            Destroy(collision.gameObject, 0.2f);
+            if (!ishidden)
+            {
+                health -= 1;
+                Destroy(playerhealth[health]);
+            }
+        }
+    }
+    #endregion
+    #region HIt stop
+    public IEnumerator hitstop(float duration)
+    {
+        float fixeddelta = Time.fixedDeltaTime;
+        Time.timeScale = 0;
+        Time.fixedDeltaTime = 0;
+        yield return new WaitForSecondsRealtime(duration);
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = fixeddelta;
+    }
+    #endregion
+    #region hitcooldown
+    public IEnumerator hitcooldown()
+    {
+        canhit = true;
+        yield return new WaitForSecondsRealtime(1f);
+        canhit = false;
+    }
+    
     #endregion
 }
 

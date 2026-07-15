@@ -7,12 +7,16 @@ TagManager:
   - obs
   - missile
   - breakable
-
-  Layers:
+  - final point
+  - final player
+  - global volume
+  - boss hands
+  - boss_projectile
+  layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - ground layer
   - Water
   - UI
   - 

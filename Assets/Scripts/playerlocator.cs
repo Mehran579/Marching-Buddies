@@ -5,7 +5,7 @@ public class playerlocator : MonoBehaviour
 {
     void Start()
     {
-        if(SceneManager.GetActiveScene().name=="boss scene 3")
+        if(SceneManager.GetActiveScene().name == "boss scene 3")
         {
             GameObject.FindWithTag("Player").transform.position = new Vector2(-24, -14);
         }

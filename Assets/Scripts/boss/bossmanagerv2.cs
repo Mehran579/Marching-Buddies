@@ -3,6 +3,14 @@ using UnityEngine;
 
 public class bossmanagerv2 : MonoBehaviour
 {
+
+
+
+    [Header("Health")]
+    public float bosshealth;
+
+
+    public float projectileduration;
     public Vector2 p0;
     public Vector2 p1;
     public Vector2 p2;
@@ -13,7 +21,6 @@ public class bossmanagerv2 : MonoBehaviour
     public Transform lefthandlandposition;
     public bool isswiperight;
     bool busy;
-    bool isshooting;
     bool slowdown;
     bool followplayer;
     bool isfalling;
@@ -32,6 +39,7 @@ public class bossmanagerv2 : MonoBehaviour
         player = GameObject.FindWithTag("final player");
         rihgthandinitialposition = righthand.transform.position;
         leftthandinitialposition = lefthand.transform.position;
+        StartCoroutine(headmover());
 
     }
     void decide()
@@ -74,7 +82,7 @@ public class bossmanagerv2 : MonoBehaviour
             }
             else if(animator.GetCurrentAnimatorStateInfo(0).IsName("aerial attack") && Vector2.Distance(player.transform.position, righthand.position) < 15 && isfalling && righthand.linearVelocity.y < 0)
             {
-                Debug.Log(Vector2.Distance(player.transform.position, righthand .position));
+                //Debug.Log(Vector2.Distance(player.transform.position, righthand .position));
                 StartCoroutine (slowdownroutine());
             }
         }
@@ -86,7 +94,7 @@ public class bossmanagerv2 : MonoBehaviour
     #region Right swipe
     public IEnumerator rightswiperoutine() 
     {
-        //lefthand.gameObject.GetComponent<Collider2D>().enabled = false;
+        righthand.gameObject.GetComponent<Collider2D>().enabled = false;
         righthand.gameObject.GetComponent<TrailRenderer>().enabled = false;
         StartCoroutine(ParabolaMove(righthand, righthandlandposition.position,1.5f,3f));
         //righthand.gravityScale = 1f;
@@ -96,10 +104,12 @@ public class bossmanagerv2 : MonoBehaviour
         //yield return new WaitForSeconds(t);
         //righthand.gravityScale = 0f;
         //righthand.linearVelocity = new Vector2(0, -50f);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         righthand.gameObject.GetComponent<TrailRenderer>().enabled = true;
+        righthand.gameObject.GetComponent<Collider2D>().enabled = true;
         righthand.linearVelocity = new Vector2(-transform.right.x * 500f, 0);
         yield return new WaitForSeconds(1f);
+        righthand.gameObject.GetComponent<Collider2D>().enabled = false;
         righthand.gameObject.GetComponent<TrailRenderer>().enabled = false;
         float speed = Vector2.Distance(righthand.position, rihgthandinitialposition)/0.3f;
         while (Vector2.Distance(righthand.position, rihgthandinitialposition) > 0.01f)
@@ -108,7 +118,6 @@ public class bossmanagerv2 : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         righthand.linearVelocity = Vector2.zero;
-        lefthand.gameObject.GetComponent<Collider2D>().enabled = true;
         statend();
     }
     #endregion
@@ -117,6 +126,7 @@ public class bossmanagerv2 : MonoBehaviour
     {
         //righthand.gameObject.GetComponent<Collider2D>().enabled = false;
         lefthand.gameObject.GetComponent<TrailRenderer>().enabled = false;
+        lefthand.gameObject.GetComponent<Collider2D>().enabled = false;
         StartCoroutine(ParabolaMove(lefthand, lefthandlandposition.position, 1.5f, 3f));
 
         //lefthand.gravityScale = 1f;
@@ -126,11 +136,13 @@ public class bossmanagerv2 : MonoBehaviour
         //yield return new WaitForSeconds(t);
         //lefthand.gravityScale = 0f;
         //lefthand.linearVelocity = new Vector2(0, -50f);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         lefthand.gameObject.GetComponent<TrailRenderer>().enabled = true;
+        lefthand.gameObject.GetComponent<Collider2D>().enabled = true;
         lefthand.linearVelocity = new Vector2(transform.right.x * 500f, 0);
         yield return new WaitForSeconds(1f);
         lefthand.gameObject.GetComponent<TrailRenderer>().enabled = false;
+        lefthand.gameObject.GetComponent<Collider2D>().enabled = false;
         float speed = Vector2.Distance(lefthand.position, leftthandinitialposition) / 0.3f;
         while (Vector2.Distance(lefthand.position, leftthandinitialposition) > 0.01f)
         {
@@ -170,7 +182,9 @@ public class bossmanagerv2 : MonoBehaviour
     public IEnumerator aerialattack()
     {
         righthand.GetComponent<TrailRenderer>().enabled = false;
+        righthand.GetComponent<Collider2D>().enabled = false;
         lefthand.GetComponent<TrailRenderer>().enabled = false;
+        lefthand.GetComponent<Collider2D>().enabled = false;
         float maxhandsheight = 20;
         while (Vector2.Distance(righthand.position,new Vector2( lefthand.position.x,lefthand.linearVelocity.y+10)) >= 12)
         {
@@ -181,7 +195,7 @@ public class bossmanagerv2 : MonoBehaviour
                 yield return new WaitForFixedUpdate();
             }
         }
-        Debug.Log("isstuckhere");
+        //Debug.Log("isstuckhere");
         lefthand.transform.SetParent(righthand.transform);
         lefthand.simulated = false;
         while (Vector2.Distance(righthand.position,new Vector2(righthand.position.x, maxhandsheight)) > 0.01)
@@ -189,23 +203,27 @@ public class bossmanagerv2 : MonoBehaviour
             righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(righthand.position.x, maxhandsheight ), Vector2.Distance(righthand.position, new Vector2(righthand.position.x, maxhandsheight))/0.5f * Time.fixedDeltaTime));
             yield return new WaitForFixedUpdate();
         }
-        Debug.Log("exited");
+        //Debug.Log("exited");
         for (int i = 0; i < 3; i++)
         {
             followplayer = true;
             yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
             followplayer = false;
             isfalling = true;
-            Debug.Log("falling");
+            //Debug.Log("falling");
+            lefthand.GetComponent<Collider2D>().enabled = true;
+            righthand.GetComponent<Collider2D>().enabled = true;
             righthand.linearVelocity = new Vector2(0, -250);
             lefthand.GetComponent<TrailRenderer>().enabled = true;
             righthand.GetComponent<TrailRenderer>().enabled = true;
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.5f);
+            righthand.GetComponent<Collider2D>().enabled = false;
+            lefthand.GetComponent<Collider2D>().enabled = false;
             righthand.linearVelocity = Vector2.zero;
-            float speed = Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)) / 0.3f;
+            //float speed = Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)) / 0.3f;
             while (Vector2.Distance(righthand.position, new Vector2(righthand.position.x, maxhandsheight)) > 0.1)
             {
-                Debug.Log("taking a breather here");
+                //Debug.Log("taking a breather here");
                 righthand.MovePosition(Vector2.MoveTowards(righthand.position, new Vector2(righthand.position.x, maxhandsheight), Vector2.Distance(righthand.position, new Vector2(righthand.position.x, maxhandsheight)) / 0.5f * Time.fixedDeltaTime));
                 yield return new WaitForFixedUpdate();
             }
@@ -213,13 +231,13 @@ public class bossmanagerv2 : MonoBehaviour
             lefthand.GetComponent<TrailRenderer>().enabled = false;
             
         }
-        Debug.Log("Exited for loop");
+        //Debug.Log("Exited for loop");
         lefthand.simulated = true;
         lefthand.transform.SetParent(transform);
         float speedleft = Vector2.Distance(lefthand.position, leftthandinitialposition) / 0.3f;
         while (Vector2.Distance(lefthand.position, leftthandinitialposition) > 0.01f)
         {
-            Debug.Log(Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)));
+            //Debug.Log(Vector2.Distance(lefthand.position, new Vector2(-18.52628f, -4.68667f)));
             lefthand.MovePosition(Vector2.MoveTowards(lefthand.position, leftthandinitialposition, speedleft * Time.fixedDeltaTime));
             yield return new WaitForFixedUpdate();
         }
@@ -236,24 +254,25 @@ public class bossmanagerv2 : MonoBehaviour
     public IEnumerator shootprojectile()
     {
         yield return new WaitForSeconds(Random.Range(0.1f, 2f));
-        isshooting = true;
+        //isshooting = true;
         Rigidbody2D p = Instantiate(projectile,new Vector2(0,10),Quaternion.identity).GetComponent<Rigidbody2D>();
         float t = 0f;
-        float duration = 0.75f;
+        float duration = projectileduration;
         p1 = Random.insideUnitCircle * 60;
         p2 = Random.insideUnitCircle * 60f;
-        p3 = player.transform.position;
+        //p3 = player.transform.position;
         while (t < 1f)
         {
+            if (p == null) break;
             float u = (1f - t);
-            Debug.Log("runnig");
+            //Debug.Log("runnig");
             t += Time.fixedDeltaTime / duration;
             t = Mathf.Clamp01(t);
-            p.MovePosition(((u * u * u) * p0 + (3f * u * u * t) * p1 + (3f * u * t * t) * p2 + (t * t * t) * p3));
+            p.MovePosition(((u * u * u) * p0 + (3f * u * u * t) * p1 + (3f * u * t * t) * p2 + (t * t * t) * new Vector2(player.transform.position.x, player.transform.position.y)));
             yield return new WaitForFixedUpdate();
         }
         animator.GetComponent<bossmanagerv2>().StartCoroutine(animator.GetComponent<bossmanagerv2>().endstage());
-        isshooting = false;
+        //isshooting = false;
     }
     #endregion
     #region restart state
@@ -277,7 +296,7 @@ public class bossmanagerv2 : MonoBehaviour
     #region Slow routine
     public IEnumerator slowdownroutine()
     {
-        Debug.Log("called slowmo");
+        //Debug.Log("called slowmo");
         slowdown = true;
         Time.timeScale = 0.01f;
         Time.fixedDeltaTime = 0.001f * Time.timeScale;
@@ -286,6 +305,31 @@ public class bossmanagerv2 : MonoBehaviour
         Time.fixedDeltaTime = 0.001f;
         yield return new WaitForSeconds(2f);
         slowdown = false;
+    }
+    #endregion
+    #region head mover
+    public IEnumerator headmover() 
+    {
+        float x1 = -40f;
+        float x2 = 40;
+
+        float speed1 = 10f;
+        float speed2 = 20f;
+
+        float wait1 = 1f;
+        float wait2 = 5f;
+
+        while (true)
+        {
+            float xpos = Random.Range(x1, x2);
+            float speed = Random.Range(speed1, speed2);
+            while(Mathf.Abs(transform.GetChild(0).position.x - xpos) > 0.01)
+            {
+                transform.GetChild(0).GetComponent<Rigidbody2D>().MovePosition(new Vector2(Mathf.MoveTowards(transform.GetChild(0).transform.position.x, xpos, speed*Time.fixedDeltaTime), transform.GetChild(0).transform.position.y));
+                yield return new WaitForFixedUpdate();
+            }
+            yield return new WaitForSeconds(Random.Range(wait1, wait2));
+        }
     }
     #endregion
 }
