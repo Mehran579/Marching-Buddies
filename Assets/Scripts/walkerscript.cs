@@ -1,6 +1,7 @@
-using Unity.Cinemachine;
+//using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
+//using UnityEngine.UIElements;
 
 public class WalkerAI : MonoBehaviour
 {
@@ -108,6 +109,7 @@ public class WalkerAI : MonoBehaviour
         return 1;
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+    public GameObject panel;
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -123,7 +125,9 @@ public class WalkerAI : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                panel.SetActive(true);
+                
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
     }

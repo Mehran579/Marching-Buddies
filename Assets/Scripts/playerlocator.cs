@@ -10,6 +10,10 @@ public class playerlocator : MonoBehaviour
         {
             GameObject.FindWithTag("Player").transform.position = new Vector2(-24, -14);
         }
+        else if(SceneManager.GetActiveScene().name == "main menu")
+        {
+            GameObject.FindWithTag("Player").transform.position = Vector2.zero;
+        }
         else
         {
             GameObject.FindWithTag("Player").transform.position = Vector3.zero;

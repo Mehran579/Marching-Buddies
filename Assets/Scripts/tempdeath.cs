@@ -1,14 +1,19 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 
 public class tempdeath : MonoBehaviour
 {
+    public GameObject restartpanel;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.parent.CompareTag("Player"))
         {
             Debug.Log("WOuld hv been killed if i wrote the logic");
-            collision.transform.parent.position = Vector3.zero;
+            restartpanel.SetActive(true);
+            //restartpanel.GetComponent<restarter>.stop();
+            //collision.transform.parent.position = Vector3.zero;
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

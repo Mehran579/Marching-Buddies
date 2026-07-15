@@ -3,9 +3,10 @@ using UnityEngine;
 public class turret : MonoBehaviour
 {
     public LineRenderer lineRenderer;
-    //public GameObject missile;
+    public GameObject panel;
     public Transform startpoint;
     public Transform endpoint;
+
     private void Start()
     {
         lineRenderer.useWorldSpace = true;
@@ -32,6 +33,7 @@ public class turret : MonoBehaviour
     private void restart()
     {
         lineRenderer.enabled = false;
-        GameObject.FindWithTag("Player").transform.position = Vector2.zero;
+        //GameObject.FindWithTag("Player").transform.position = Vector2.zero;
+        panel.SetActive(true);
     }
 }

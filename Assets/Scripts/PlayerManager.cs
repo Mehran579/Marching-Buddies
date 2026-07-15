@@ -1,5 +1,5 @@
 using System.Collections;
-using Unity.Cinemachine;
+//using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -303,6 +303,10 @@ public class PlayerManager : MonoBehaviour
             if (canpush)
             {
                 collision.gameObject.GetComponent<Rigidbody2D>().constraints &= ~RigidbodyConstraints2D.FreezePositionX;
+                if (isdashing)
+                {
+                    Destroy(collision.gameObject);
+                }
             }
             else
             {

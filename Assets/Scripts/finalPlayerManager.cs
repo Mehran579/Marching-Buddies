@@ -1,13 +1,13 @@
 using System.Collections;
-using Unity.Cinemachine;
-using System.Collections.Generic;
+//using Unity.Cinemachine;
+//using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
-using JetBrains.Annotations;
+//using JetBrains.Annotations;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +19,7 @@ public class finalPlayerManager : MonoBehaviour
     bool shiftpressed;
     [Header("Health")]
     bool canhit = true;
-    int health = 3;
+    public int health = 3;
     public GameObject[] playerhealth;
     public Animator bossAnimator;
     public GameObject _camera;
@@ -126,6 +126,8 @@ public class finalPlayerManager : MonoBehaviour
     public ParticleSystem groundbreak;
     public GameObject tutorialtext;
     public GameObject damagetext;
+    public GameObject bosshealt;
+    public GameObject panel; 
     public IEnumerator startfight()
     {
         fightroutinestarted = true;
@@ -134,6 +136,7 @@ public class finalPlayerManager : MonoBehaviour
         shiftpressed = true;
         groundbreak.Play();
         bossAnimator.gameObject.SetActive(true);
+        bosshealt.gameObject.SetActive(true);
         enemyhealth.gameObject.SetActive(true);
         damagetext.SetActive(true);
         yield return new WaitForSeconds(4f);
@@ -163,6 +166,15 @@ public class finalPlayerManager : MonoBehaviour
 
     private void Update()
     {
+        if(health <= 0)
+        {
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            panel.SetActive(true);
+        }
+        if(enemyhealth.value <= 0)
+        {
+            SceneManager.LoadScene("last scene");
+        }
         //if(Mathf.Sign(movement.x) > 0)
         //{
         //    for (int i = 0; i < stances.Count; i++)
@@ -286,16 +298,7 @@ public class finalPlayerManager : MonoBehaviour
                 }
             }
         }
-        if(health == 0)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        if(enemyhealth.value == 0)
-        {
-            SceneManager.LoadScene("last scene");
-        }
     }
-    //public GameObject temp; 
     private void FixedUpdate()
     {
         if (isdashing) return;
@@ -419,6 +422,7 @@ public class finalPlayerManager : MonoBehaviour
     //    }
     //}1`
     public GameObject playerattack;
+    public int hitcount;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("enemy head child is ",bossAnimator.transform.GetChild(0));
@@ -426,20 +430,38 @@ public class finalPlayerManager : MonoBehaviour
         if (collision.CompareTag("boss hands")&& collision.transform != bossAnimator.transform.GetChild(0))
         {
             //Debug.Log("damage taken");
+
+            hitcount += 1;
+
             hitcooldown();
             hitstop(hitstopduration);
             health -= 1;
-            Destroy(playerhealth[health]);
+            if(health >= 0)
+            {
+                Destroy(playerhealth[health]);
+            }
             StartCoroutine(shake(1,0.5f));
+            if(hitcount == 3)
+            {
+                panel.SetActive(true);
+            }
         }
         if(collision.CompareTag("boss_projectile"))
         {
             Destroy(collision.gameObject, 0.2f);
             if (!ishidden)
             {
+                hitcount += 1;
                 hitcooldown();
                 health -= 1;
-                Destroy(playerhealth[health]);
+                if(health >= 0)
+                {
+                    Destroy(playerhealth[health]);
+                }
+                if(hitcount == 3)
+                {
+                    panel.SetActive(true);
+                }
             }
         }
         if(collision.gameObject == bossAnimator.transform.GetChild(0).gameObject && ischarged)
