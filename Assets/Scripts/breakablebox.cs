@@ -9,8 +9,8 @@ public class BreakableBlock : MonoBehaviour
         if (player == null)
             return;
 
-        // Destroy if dashing or using strength
-        if (player.isdashing || player.canpush)
+        // Destroy if dashing or using strength, noo dash shouldn't be able to destroy you have to dash with the strenght active;
+        if (player.isdashing && player.canpush)
         {
             Destroy(gameObject);
         }
