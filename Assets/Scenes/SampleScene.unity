@@ -905,6 +905,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 399514936}
   m_CullTransparentMesh: 1
+--- !u!1 &434749371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 434749373}
+  - component: {fileID: 434749372}
+  m_Layer: 0
+  m_Name: playersaver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &434749372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434749371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f0c33501bc1324f9be117ac9a62027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::persistentmanager
+--- !u!4 &434749373
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434749371}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 151.10464, y: 99.33083, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1556106570}
+  - {fileID: 1060096614}
+  - {fileID: 519420032}
+  - {fileID: 1993002074}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &507910437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1170,11 +1218,11 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 2.5909363e-24, y: -0.000000029802322, z: 7.721592e-32, w: 1}
-  m_LocalPosition: {x: -0.19187242, y: 3.056, z: -10}
+  m_LocalPosition: {x: -151.2913, y: -96.27483, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 434749373}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &519420033
 MonoBehaviour:
@@ -2246,12 +2294,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1060096612}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7615207, y: -2.1787906, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -150.34312, y: -101.50962, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 434749373}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1195970196
 GameObject:
@@ -3285,8 +3333,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556106566}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.17, y: -1.944, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -151.27464, y: -101.27483, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3295,7 +3343,7 @@ Transform:
   - {fileID: 2077365658}
   - {fileID: 640447738}
   - {fileID: 309767692}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 434749373}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1556106571
 MonoBehaviour:
@@ -3323,7 +3371,7 @@ MonoBehaviour:
   Jump: 15
   candash: 0
   canpush: 0
-  ishidden: 0
+  ishidden: 1
   ischarged: 0
   speedboost: 25
   jumpboost: 19.3
@@ -3862,12 +3910,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1993002071}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.000000029802322, z: 8.69374e-17, w: 1}
-  m_LocalPosition: {x: -0.19187242, y: 3.056, z: -10}
+  m_LocalRotation: {x: -0, y: -0.000000029802322, z: 8.69374e-17, w: 1}
+  m_LocalPosition: {x: -151.2913, y: -96.27483, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 434749373}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1993002075
 MonoBehaviour:
@@ -4528,15 +4576,12 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1195970200}
   - {fileID: 762253600}
-  - {fileID: 1556106570}
   - {fileID: 998300123}
-  - {fileID: 1060096614}
   - {fileID: 7903220647716384294}
-  - {fileID: 1993002074}
   - {fileID: 1261711917}
   - {fileID: 135835417}
   - {fileID: 563844662}
+  - {fileID: 434749373}
