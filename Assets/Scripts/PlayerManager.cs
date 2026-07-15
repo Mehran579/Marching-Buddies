@@ -322,7 +322,9 @@ public class PlayerManager : MonoBehaviour
         {
         GameObject.FindWithTag("final player").transform.position = collision.transform.position;
         GameObject newplayer = GameObject.FindWithTag("final player");
-        c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
+            //c_camera.GetComponent<CinemachineCamera>().Follow = newplayer.transform;
+            c_camera.SetActive(false);
+            _camera.SetActive(false);
             GetComponent<PlayerInput>().enabled = false;
             newplayer.GetComponent<PlayerInput>().enabled = true;
             newplayer.GetComponent<finalPlayerManager>().enabled = true;
